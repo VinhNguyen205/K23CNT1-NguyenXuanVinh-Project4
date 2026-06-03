@@ -1,5 +1,8 @@
 from backend.app import db
-from backend.app.models.g6_hoi_vien import G6HoiVien, G6DangKyGoiTap
+# 1. Sửa Import: Bỏ G6HoiVien đi, chỉ lấy G6DangKyGoiTap
+from backend.app.models.g6_hoi_vien import G6DangKyGoiTap
+# 2. Import đúng class G6NguoiDung từ file g6_nguoi_dung.py
+from backend.app.models.g6_nguoi_dung import G6NguoiDung
 from backend.app.models.g6_thong_bao import G6ThongBao
 from backend.app.services.g6_dich_vu_cau_hinh import NqtDichVuCauHinh
 from backend.app.services.nqt_dich_vu_email import NqtDichVuEmail
@@ -39,7 +42,8 @@ def nqt_kiem_tra_goi_tap_het_han(nqt_app):
 
             for nqt_dang_ky in nqt_danh_sach:
                 try:
-                    nqt_hoi_vien = G6HoiVien.query.get(nqt_dang_ky.g6_ma_hoi_vien)
+                    # 3. Sửa query: Đổi G6HoiVien thành G6NguoiDung và g6_ma_hoi_vien thành g6_ma_nguoi_dung
+                    nqt_hoi_vien = G6NguoiDung.query.get(nqt_dang_ky.g6_ma_nguoi_dung)
                     if not nqt_hoi_vien:
                         continue
 
@@ -56,7 +60,8 @@ def nqt_kiem_tra_goi_tap_het_han(nqt_app):
                             f'Hội viên {nqt_hoi_vien.g6_ho_ten} — gói "{nqt_ten_goi}" '
                             f'sẽ hết hạn vào ngày {nqt_dang_ky.g6_ngay_het_han}.'
                         ),
-                        g6_ma_doi_tuong=nqt_hoi_vien.g6_ma_hoi_vien,
+                        # 4. Sửa thuộc tính ID cho khớp G6NguoiDung
+                        g6_ma_doi_tuong=nqt_hoi_vien.g6_ma_nguoi_dung, 
                         g6_loai_doi_tuong='hoi_vien',
                         g6_ngay_tao=datetime.utcnow(),
                     )
